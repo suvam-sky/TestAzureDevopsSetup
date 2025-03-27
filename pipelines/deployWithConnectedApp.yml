@@ -46,11 +46,11 @@ jobs:
         - task: NodeTool@0 
           inputs:
             versionSpec: '18.x'
-        - task: DownloadSecureFile@1
-          name: SalesforceToken
-          displayName: 'Download auth file for SFDX'
-          inputs:
-            secureFile: $(environmentName)Token.json
+        # - task: DownloadSecureFile@1
+        #   name: SalesforceToken
+        #   displayName: 'Download auth file for SFDX'
+          # inputs:
+          #   secureFile: $(environmentName)Token.json
         - script: |
             echo "*******SOURCE_BRANCH_NAME****************"
             sourceBranch=$(echo "prj/""$BRANCH_NAME" | sed 's|refs/heads/||g')
@@ -103,7 +103,7 @@ jobs:
 
             if grep -q "<types>" "$xml_file"; then
                 echo "Deploying metadata to org..."
-                sf project deploy start -a 59.0 -x manifest/package.xml --target-org $(environmentName) --ignore-conflicts
+                sf project deploy start -a 59.0 -x manifest/package.xml --target-org $(UserName) --ignore-conflicts
                 echo "Running Destructive changes..."
                 sf project deploy start --manifest ./destructiveChanges/package.xml --post-destructive-changes ./destructiveChanges/destructiveChangesPost.xml --target-org practice123@pwc.com --ignore-warnings 
             else
