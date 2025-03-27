@@ -78,6 +78,7 @@ jobs:
             if ! command -v sfdx &> /dev/null
               then
                   echo "SFDX Not found, installing..."
+                  # install sf
                   npm install @salesforce/cli --global --loglevel verbose
                   echo y | sfdx plugins:install sfdx-git-delta
                   # echo y | sfdx plugins:install @salesforce/sfdx-scanner
@@ -104,11 +105,13 @@ jobs:
             if grep -q "<types>" "$xml_file"; then
                 echo "Deploying metadata to org..."
                 sf project deploy start -x manifest/package.xml --target-org $(environmentName)
-                echo "Running Destructive changes..."
-                sf project deploy start --manifest ./destructiveChanges/package.xml --postdestructivechanges ./destructiveChanges/destructiveChangesPost.xml --target-org practice123@pwc.com --ignorewarnings 
+                # echo "Running Destructive changes..."
+                sf project deploy start --manifest ./destructiveChanges/package.xml --post-destructive-changes ./destructiveChanges/destructiveChangesPost.xml --target-org practice123@pwc.com --ignore-warnings
+                # sfdx force:source:deploy --manifest ./destructiveChanges/package.xml --postdestructivechanges ./destructiveChanges/destructiveChangesPost.xml -u practice123@pwc.com --ignorewarnings 
             else
                 echo "Running Destructive changes..."
-                sf project deploy start --manifest ./destructiveChanges/package.xml --postdestructivechanges ./destructiveChanges/destructiveChangesPost.xml --target-org practice123@pwc.com --ignorewarnings 
+                sf project deploy start --manifest ./destructiveChanges/package.xml --post-destructive-changes ./destructiveChanges/destructiveChangesPost.xml --target-org practice123@pwc.com --ignore-warnings
+                # sfdx force:source:deploy --manifest ./destructiveChanges/package.xml --postdestructivechanges ./destructiveChanges/destructiveChangesPost.xml -u practice123@pwc.com --ignorewarnings  
             fi
         #     # if [ $(runTestClasses) = "true" ]; then
         #     #   echo "runTestClasses variable set to true, running build with test classes"
