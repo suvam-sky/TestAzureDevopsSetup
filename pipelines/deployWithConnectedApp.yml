@@ -86,7 +86,7 @@ jobs:
             fi
           displayName: "Install SFDX and SDG"
         - script: |
-            sf org login jwt --client-id $(clientID) --jwt-key-file /bin/server.key --username $(UserName) --instance-url $(instanceURL)
+            sf org login jwt --client-id $(clientID) --jwt-key-file ./bin/server.key --username $(UserName) --instance-url $(instanceURL)
           displayName: "Salesforce Login"
         - script: |
             SOURCE_PATTERNS="force-app/main/default,force-app-target/qa"
