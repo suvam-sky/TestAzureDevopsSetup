@@ -60,6 +60,7 @@ jobs:
                   npm install -g @salesforce/cli --loglevel verbose
                   echo y | sf plugins install sfdx-git-delta
                   # echo y | sfdx plugins:install @salesforce/sfdx-scanner
+                  sf plugins install @salesforce/sfdx-scanner
               else
                   echo "SFDX installed."
             fi
