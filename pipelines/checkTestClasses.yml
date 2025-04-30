@@ -30,26 +30,7 @@ jobs:
           displayName: 'Download auth file for SFDX'
           inputs:
             secureFile: $(environmentName)Token.json
-        # - script: |
-        #     echo "*******SOURCE_BRANCH_NAME****************"
-        #     sourceBranch=$(echo "prj/""$BRANCH_NAME" | sed 's|refs/heads/||g')
-        #     echo "##vso[task.setvariable variable=sourceBranch;]$sourceBranch"
-        #     echo "$sourceBranch"
-        #     echo "*****************************************"
-        #     curl -H "Authorization: Bearer $SYSTEM_ACCESSTOKEN" -X GET -L "https://dev.azure.com/suvam1999roy/Azure%20Devops%20Test/_apis/build/latest/$(System.DefinitionId)?branchName=$sourceBranch&api-version=7.0-preview.1" -o sourceVersionResponse.json
-        #     echo "************************"
-        #     cat sourceVersionResponse.json
-        #     echo "************************"
-        #     if cat sourceVersionResponse.json | grep -o '"result":"[^"]*' | grep -o '[^"]*$' | grep -q succeeded; then
-        #       latestBuildCommit=$(cat sourceVersionResponse.json | grep -o '"sourceVersion":"[^"]*' | grep -o '[^"]*$')
-        #       echo "Last build succeeded, commit set to latest deployed to environment: $latestBuildCommit"
-        #       echo "##vso[task.setvariable variable=latestBuildCommit]$latestBuildCommit"
-        #     else
-        #       latestBuildCommit=$(commitID)
-        #       echo "Last build failed or error, commit set to initial one from branch $BRANCH_NAME and its $latestBuildCommit"
-        #       echo "##vso[task.setvariable variable=latestBuildCommit]$latestBuildCommit"
-        #     fi
-        #   displayName: "Download latest build commit for environment"
+
           env:
               BRANCH_NAME: $(Build.SourceBranchName)
               SYSTEM_ACCESSTOKEN: $(System.AccessToken)
@@ -69,20 +50,63 @@ jobs:
         - script: |
             sf org login sfdx-url -f $(SalesforceToken.secureFilePath) -a $(environmentName)
           displayName: "Salesforce Login"
+       
+        - task: UsePythonVersion@0
+          inputs:
+            versionSpec: '3.x'
+            addToPath: true
+
+        # - script: |
+        #     python3 -c "
+        #     import os
+
+        #     # Define the directory containing the classes
+        #     classes_dir = 'force-app/main/default/classes'
+
+        #     # List all files in the directory
+        #     files = os.listdir(classes_dir)
+
+        #     # Filter out files containing 'Test' in their name and with the .cls extension,
+        #     # and remove the .cls extension
+        #     test_classes = [f.replace('.cls', '') for f in files if 'Test' in f and f.endswith('.cls')]
+
+        #     # Display the class names in the console output
+        #     print('Test Classes Found:')
+        #     for test_class in test_classes:
+        #         print(test_class)
+
+        #     # Write the filtered class names to a text file
+        #     with open('test_classes.txt', 'w') as f:
+        #         for test_class in test_classes:
+        #             f.write(test_class + '\\n')
+        #     "
+        #   displayName: 'Find Test Classes and Write to File'
+        #   workingDirectory: '$(Build.SourcesDirectory)'
 
         - task: Bash@3
           displayName: 'Run Apex Tests from File and Validate Pass Rate'
           inputs:
             targetType: 'inline'
             script: |
-              file="allTestclasses.txt"
+              # file="test_classes.txt" # if the txt file is in the folder
+
+              echo "=========Scanning for Apex test classes...============="
+              
+              find force-app/main/default/classes -type f -name "*Test.cls" | while read -r file; do
+                # Extract class name (filename without path and extension)
+                basename "$file" .cls
+              done > test_classes.txt
+
+              echo "==========Generated test_classes.txt with the following classes:=============="
+              cat test_classes.txt
+              file="test_classes.txt"
               failed=0
 
               while IFS= read -r line || [ -n "$line" ]; do
                 class=$(echo "$line" | sed 's/[,[:space:]]*$//')
                   if [ -n "$class" ]; then
                     echo "Test Class: $class"
-                    output=$(sf apex run test --class-names ""$class""  --result-format human  --synchronous --target-org $(environmentName))
+                    output=$(sf apex run test --class-names "$class"  --result-format human  --synchronous --target-org $(environmentName))
                     echo "=================== TEST CLASS RESULTS ==========================="
                     echo "$output"
                     echo "=================================================================="
