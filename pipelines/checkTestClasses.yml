@@ -100,13 +100,17 @@ jobs:
                     f.write(test_class + '\\n')
             "
           displayName: 'Find Test Classes and Write to File'
+          workingDirectory: '$(Build.SourcesDirectory)'
 
         - task: Bash@3
           displayName: 'Run Apex Tests from File and Validate Pass Rate'
           inputs:
             targetType: 'inline'
             script: |
-              file="test_classes.txt.txt"
+              # file="test_classes.txt"
+              file = $(cat $(Build.SourcesDirectory)/test_classes.txt)
+              echo "##vso[task.setVariable variable=testClasses]$file"
+              
               failed=0
 
               while IFS= read -r line || [ -n "$line" ]; do
