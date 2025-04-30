@@ -70,7 +70,7 @@ jobs:
         - task: Bash@3
           displayName: 'Run Apex Tests from File and Validate Pass Rate'
           inputs:
-
+            targetType: 'inline'
             script: |
               file="allTestclasses.txt"
               
