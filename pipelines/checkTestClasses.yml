@@ -87,7 +87,14 @@ jobs:
                     echo "=================================================================="
                     
                     pass_rate=$(echo "$output" | grep "Pass Rate" | awk '{print $NF}' | sed 's/%//')
-                    echo "Pass Rate for $testClass: $pass_rate%"
+                    echo "Pass Rate for $class: $pass_rate%"
+                    
+                    if (( $(echo "$pass_rate < 90" | bc -l) )); then
+                      echo "❌ Test class $testClass has pass rate below 90%"
+                      exit 1
+                    else
+                      echo "✅ Test class $testClass passed threshold"
+                    fi
                   fi
                 
               done < "$file"
