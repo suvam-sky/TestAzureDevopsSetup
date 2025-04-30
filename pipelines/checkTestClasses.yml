@@ -69,13 +69,43 @@ jobs:
         - script: |
             sf org login sfdx-url -f $(SalesforceToken.secureFilePath) -a $(environmentName)
           displayName: "Salesforce Login"
+       
+        - task: UsePythonVersion@0
+          inputs:
+            versionSpec: '3.x'
+            addToPath: true
+
+        - script: |
+            import os
+
+            # Define the directory containing the classes
+            classes_dir = 'force-app/main/default/classes'
+
+            # List all files in the directory
+            files = os.listdir(classes_dir)
+
+            # Filter out files containing 'Test' in their name and with the .cls extension,
+            # and remove the .cls extension
+            test_classes = [f.replace('.cls', '') for f in files if 'Test' in f and f.endswith('.cls')]
+
+            # Display the class names in the console output
+            print("Test Classes Found:")
+            for test_class in test_classes:
+                print(test_class)
+
+            # Write the filtered class names to a text file
+            with open('test_classes.txt', 'w') as f:
+                for test_class in test_classes:
+                    f.write(test_class + '\n')
+
+          displayName: 'Find Test Classes and Write to File'
 
         - task: Bash@3
           displayName: 'Run Apex Tests from File and Validate Pass Rate'
           inputs:
             targetType: 'inline'
             script: |
-              file="allTestclasses.txt"
+              file="test_classes.txt.txt"
               failed=0
 
               while IFS= read -r line || [ -n "$line" ]; do
