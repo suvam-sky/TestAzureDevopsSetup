@@ -65,7 +65,10 @@ jobs:
                   echo "SFDX installed."
             fi
           displayName: "Install SFDX and SDG"
-
+        
+        - script: |
+            sf org login sfdx-url -f $(SalesforceToken.secureFilePath) -a $(environmentName)
+          displayName: "Salesforce Login"
 
         - task: Bash@3
           displayName: 'Run Apex Tests from File and Validate Pass Rate'
