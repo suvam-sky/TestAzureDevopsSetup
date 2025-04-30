@@ -108,8 +108,17 @@ jobs:
             targetType: 'inline'
             script: |
               # file="test_classes.txt"
-              file = $(cat $(Build.SourcesDirectory)/test_classes.txt)
-              echo "##vso[task.setVariable variable=testClasses]$file"
+              # file = $(cat $(Build.SourcesDirectory)/test_classes.txt)
+              # echo "##vso[task.setVariable variable=testClasses]$file"
+              echo "=========Scanning for Apex test classes...============="
+              
+              find force-app/main/default/classes -type f -name "*Test.cls" | while read -r file; do
+                # Extract class name (filename without path and extension)
+                basename "$file" .cls
+              done > test_classes.txt
+
+              echo "==========Generated test_classes.txt with the following classes:=============="
+              cat test_classes.txt
               
               failed=0
 
