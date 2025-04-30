@@ -70,8 +70,10 @@ jobs:
         - task: Bash@3
           displayName: 'Run Apex Tests from File and Validate Pass Rate'
           inputs:
-            script: |
 
+            script: |
+              file="allTestclasses.txt"
+              
               while IFS=, read -r line; do
                 for word in  $(echo $line | tr -s ',' '\n'); do
                   echo $word
