@@ -92,7 +92,7 @@ jobs:
 
               echo "=========Scanning for Apex test classes...============="
               
-              find force-app/main/default/classes -type f -name "*Test.cls" | while read -r file; do
+              find force-app/main/default/classes -type f -name "*.cls" -print | grep -i 'Test' | while read -r file; do
                 # Extract class name (filename without path and extension)
                 basename "$file" .cls
               done > test_classes.txt
