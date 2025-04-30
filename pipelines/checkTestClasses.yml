@@ -81,7 +81,7 @@ jobs:
                 class=$(echo "$line" | sed 's/[,[:space:]]*$//')
                   if [ -n "$class" ]; then
                     echo "Test Class: $class"
-                    output=$(sf apex run test --class-names ""$class""  --result-format human  --synchronous)
+                    output=$(sf apex run test --class-names ""$class""  --result-format human  --synchronous --target-org $(environmentName))
                   fi
                 
               done < "$file"
