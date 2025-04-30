@@ -90,14 +90,14 @@ jobs:
             test_classes = [f.replace('.cls', '') for f in files if 'Test' in f and f.endswith('.cls')]
 
             # Display the class names in the console output
-            print("Test Classes Found:")
+            print('Test Classes Found:')
             for test_class in test_classes:
                 print(test_class)
 
             # Write the filtered class names to a text file
             with open('test_classes.txt', 'w') as f:
                 for test_class in test_classes:
-                    f.write(test_class + '\n')
+                    f.write(test_class + '\\n')
             "
           displayName: 'Find Test Classes and Write to File'
 
