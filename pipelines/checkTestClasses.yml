@@ -76,7 +76,8 @@ jobs:
             targetType: 'inline'
             script: |
               file="allTestclasses.txt"
-              
+              failed=0
+
               while IFS= read -r line || [ -n "$line" ]; do
                 class=$(echo "$line" | sed 's/[,[:space:]]*$//')
                   if [ -n "$class" ]; then
@@ -91,10 +92,15 @@ jobs:
                     
                     if (( $(echo "$pass_rate < 90" | bc -l) )); then
                       echo "❌ Test class $testClass has pass rate below 90%"
-                      exit 1
+                      failed=1
                     else
                       echo "✅ Test class $testClass passed threshold"
                     fi
                   fi
                 
               done < "$file"
+              
+              if [ "$failed" -eq 1 ]; then
+                echo "One or more test classes failed to meet the pass rate threshold"
+                exit 1
+              fi
