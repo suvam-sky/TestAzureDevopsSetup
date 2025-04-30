@@ -98,7 +98,7 @@ jobs:
             with open('test_classes.txt', 'w') as f:
                 for test_class in test_classes:
                     f.write(test_class + '\n')
-
+            "
           displayName: 'Find Test Classes and Write to File'
 
         - task: Bash@3
