@@ -77,7 +77,7 @@ jobs:
               while IFS=, read -r line; do
                 for word in $(echo $line | tr -s ',' '\n'); do
                   echo $word
-                
+
                 done
               
               done < "$file"
