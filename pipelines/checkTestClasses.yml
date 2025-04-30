@@ -72,13 +72,11 @@ jobs:
           inputs:
             targetType: 'inline'
             script: |
-              set -e
-              
-              failed=0
+
               file="allTestclasses.txt"
 
               while IFS=, read -r line; do
-                for word in $(echo $line | tr -s ' ,' '\n'); do
+                for word in $(echo $line | tr -s ',' '\n'); do
                   echo $word
 
                 done
