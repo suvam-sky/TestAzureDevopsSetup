@@ -89,8 +89,8 @@ jobs:
             sf org login sfdx-url -f $(SalesforceToken.secureFilePath) -a $(environmentName)
           displayName: "Salesforce Login"
         - script: |
-            SOURCE_PATTERNS="force-app/main/default,force-app-target/qa"
-            sf sgd source delta --to HEAD --from $(latestBuildCommit) -o .  --ignore-file devops/gitignore/.fileIgnore
+ 
+            sf sgd source delta --to HEAD --from $(latestBuildCommit) -o . 
             mv package/package.xml manifest/package.xml
             echo "*********PACKAGE.XML******************"
             cat manifest/package.xml
