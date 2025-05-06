@@ -112,6 +112,12 @@ jobs:
           inputs:
             testResultsFormat: 'JUnit'
             testResultsFiles: '**/TEST-$(Build.BuildNumber).xml'
+        - task: PublishPipelineArtifact@1
+          inputs:
+            targetPath: '$(Pipeline.Workspace)'
+            artifact: 'encrypted-certificates'
+            publishLocation: 'pipeline'
+          displayName: 'Publish Encrypted Certificate'
 
 
         - task: Bash@3
