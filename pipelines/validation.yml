@@ -105,6 +105,10 @@ jobs:
         - script: |
             # sfdx scanner:run --target "./force-app/" --pmdconfig "./devops/ruleset/apex-ruleset.xml" -f junit -o TEST-$(Build.BuildNumber).xml
             sf scanner run --target ./force-app/ --pmdconfig ./devops/ruleset/apex-ruleset.xml -f junit -o TEST-$(Build.BuildNumber).xml
+            mkdir -p $(Build.ArtifactStagingDirectory)
+
+            # Copy TEST-XML file to the staging directory
+            cp ./TEST-$(Build.BuildNumber).xml $(Build.ArtifactStagingDirectory)
           displayName: "Run SF Scanner"
           condition: succeededOrFailed()
         - task: PublishTestResults@2
@@ -112,12 +116,18 @@ jobs:
           inputs:
             testResultsFormat: 'JUnit'
             testResultsFiles: '**/TEST-$(Build.BuildNumber).xml'
+        # - task: PublishPipelineArtifact@1
+        #   inputs:
+        #     targetPath: '$(Pipeline.Workspace)'
+        #     artifact: 'encrypted-certificates'
+        #     publishLocation: 'pipeline'
+        #   displayName: 'Publish Encrypted Certificate'
         - task: PublishPipelineArtifact@1
           inputs:
-            targetPath: '$(Pipeline.Workspace)'
-            artifact: 'encrypted-certificates'
+            targetPath: '$(Build.ArtifactStagingDirectory)'
+            artifactName: 'ScannerResults'
             publishLocation: 'pipeline'
-          displayName: 'Publish Encrypted Certificate'
+          condition: succeededOrFailed()
 
 
         - task: Bash@3
