@@ -117,10 +117,10 @@ jobs:
             #   sfdx force:source:deploy -x manifest/package.xml --targetusername $(environmentName)
             # fi
           displayName: "Deploy to environment Or Run Destructive Changes"
-        # - script: |
-        #       sfdx force:source:deploy --manifest ./destructiveChanges/package.xml --postdestructivechanges ./destructiveChanges/destructiveChangesPost.xml -u practice123@pwc.com --ignorewarnings 
+        - script: |
+              sfdx force:source:deploy --manifest ./destructiveChanges/package.xml --postdestructivechanges ./destructiveChanges/destructiveChangesPost.xml -u practice123@pwc.com --ignorewarnings 
             
-        #   displayName: "Run Destructive Changes"
+          displayName: "Run Destructive Changes"
         - script: |
             if [ $(environmentName) = "PROD" ]; then
               ver="$(environmentName)-$(date '+%d-%m-%Y-%H-%M')"
